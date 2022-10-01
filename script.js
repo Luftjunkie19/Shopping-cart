@@ -262,6 +262,7 @@ const removeCartItem = function (e) {
         countPriceofCart();
       }
     });
+
     showNotification();
   }
 };
