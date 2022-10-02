@@ -289,7 +289,7 @@ const incrementThequantity = function (e) {
   }
 };
 
-//All occur Bra !
+//All events!
 document.addEventListener(`DOMContentLoaded`, getLocalStorage);
 cartItemsContainer.addEventListener(`click`, removeCartItem);
 itemsHolder.addEventListener(`click`, getProductToCart);
