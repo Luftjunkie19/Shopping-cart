@@ -25,7 +25,7 @@ const getLocalStorage = function () {
 
     <div class="quantity-box">
     <button class="btn decrease-qnt">Decrease</button>
-    <div class="number">${quantityOfProducts}</div>
+    <div class="number">1</div>
     <button class="btn increase-qnt">Increase</button>
     </div>
 
@@ -228,8 +228,6 @@ const showNotification = function () {
 };
 showNotification();
 
-let quantityOfProducts = 1;
-
 //Adds product in UI
 const addProductToCart = function (e) {
   e.preventDefault();
@@ -241,17 +239,12 @@ const addProductToCart = function (e) {
       <img src="${product.img}" alt="${product.id}" />
       </div>
       <p class="item-title">${product.name}</p>
-  
       
-    <p class="item-price">${product.price}&euro;</p>
-
       <div class="quantity-box">
       <button class="btn decrease-qnt">Decrease</button>
-      <div class="number">${quantityOfProducts}</div>
+      <div class="number">1</div>
       <button class="btn increase-qnt">Increase</button>
       </div>
-
-  
 
       <button class="remove-btn">
       <i class="fas fa-remove fa-2x"></i>
@@ -259,6 +252,7 @@ const addProductToCart = function (e) {
       </button>
       </div>`;
     });
+
     cartItemsContainer.innerHTML = cartProduct;
     countItemsInCart();
     countPriceofCart();
@@ -266,27 +260,37 @@ const addProductToCart = function (e) {
 };
 
 const increaseQuantity = function (e) {
-  if (e.target.classList.contains(`increase-qnt`)) {
-    quantityOfProducts++;
-    console.log(e.target.previousElementSibling);
-    e.target.previousElementSibling.innerHTML = quantityOfProducts;
-  } else {
-    e.preventDefault();
+  if (e.target.classList.contains("increase-qnt")) {
+    let addBtns = document.getElementsByClassName("increase-qnt");
+
+    for (let addButton of addBtns) {
+      addButton.onclick = () => {
+        let currentInputBox = addButton.previousElementSibling;
+        currentInputBox.innerText = parseInt(currentInputBox.innerText) + 1;
+      };
+    }
   }
 };
 
 const decreaseQuantity = function (e) {
   if (e.target.classList.contains("decrease-qnt")) {
-    quantityOfProducts--;
-    if (quantityOfProducts < 1) {
-      quantityOfProducts = 1;
-      e.target.nextElementSibling.innerHTML = quantityOfProducts;
+    let decBtns = document.getElementsByClassName("decrease-qnt");
+
+    for (let decButton of decBtns) {
+      decButton.onclick = () => {
+        let currentInputBox = decButton.nextElementSibling;
+        currentInputBox.innerText = +currentInputBox.innerText - 1;
+
+        if (+currentInputBox.innerText - 1 <= 0) {
+          currentInputBox.innerText = 1;
+        }
+      };
     }
-    e.target.nextElementSibling.innerHTML = quantityOfProducts;
-  } else {
-    e.preventDefault();
   }
 };
+
+cartItemsContainer.addEventListener("click", increaseQuantity);
+cartItemsContainer.addEventListener("click", decreaseQuantity);
 
 //Removes item from array and from from UI
 const removeCartItem = function (e) {
@@ -308,8 +312,6 @@ const removeCartItem = function (e) {
 //All events!
 document.addEventListener(`DOMContentLoaded`, getLocalStorage);
 cartItemsContainer.addEventListener(`click`, removeCartItem);
-cartItemsContainer.addEventListener("click", increaseQuantity);
-cartItemsContainer.addEventListener("click", decreaseQuantity);
 itemsHolder.addEventListener(`click`, getProductToCart);
 itemsHolder.addEventListener(`click`, addProductToCart);
 showCartBtn.addEventListener(`click`, showCart);
