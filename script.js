@@ -21,8 +21,14 @@ const getLocalStorage = function () {
     <img src="${product.img}"/>
     </div>
     <p class="item-title">${product.name}</p>
-    <input class="quantity" type="number" value="1" step="1" min="1" max="15">
     <p class="item-price">${product.price}&euro;</p>
+
+    <div class="quantity-box">
+    <button class="btn decrease-qnt">Decrease</button>
+    <div class="number">${quantityOfProducts}</div>
+    <button class="btn increase-qnt">Increase</button>
+    </div>
+
     <p class="new-price"></p>
     
     <button class="remove-btn"><i class="fas fa-remove fa-2x"></i>Remove</button>
@@ -222,6 +228,8 @@ const showNotification = function () {
 };
 showNotification();
 
+let quantityOfProducts = 1;
+
 //Adds product in UI
 const addProductToCart = function (e) {
   e.preventDefault();
@@ -233,10 +241,17 @@ const addProductToCart = function (e) {
       <img src="${product.img}" alt="${product.id}" />
       </div>
       <p class="item-title">${product.name}</p>
-      <input class="quantity" type="number" value="1" step="1" max="15">
-      <p class="item-price">${product.price}&euro;</p>
-      <p class="new-price"></p>
+  
+      
+    <p class="item-price">${product.price}&euro;</p>
 
+      <div class="quantity-box">
+      <button class="btn decrease-qnt">Decrease</button>
+      <div class="number">${quantityOfProducts}</div>
+      <button class="btn increase-qnt">Increase</button>
+      </div>
+
+  
 
       <button class="remove-btn">
       <i class="fas fa-remove fa-2x"></i>
@@ -247,6 +262,29 @@ const addProductToCart = function (e) {
     cartItemsContainer.innerHTML = cartProduct;
     countItemsInCart();
     countPriceofCart();
+  }
+};
+
+const increaseQuantity = function (e) {
+  if (e.target.classList.contains(`increase-qnt`)) {
+    quantityOfProducts++;
+    console.log(e.target.previousElementSibling);
+    e.target.previousElementSibling.innerHTML = quantityOfProducts;
+  } else {
+    e.preventDefault();
+  }
+};
+
+const decreaseQuantity = function (e) {
+  if (e.target.classList.contains("decrease-qnt")) {
+    quantityOfProducts--;
+    if (quantityOfProducts < 1) {
+      quantityOfProducts = 1;
+      e.target.nextElementSibling.innerHTML = quantityOfProducts;
+    }
+    e.target.nextElementSibling.innerHTML = quantityOfProducts;
+  } else {
+    e.preventDefault();
   }
 };
 
@@ -267,32 +305,11 @@ const removeCartItem = function (e) {
   }
 };
 
-const incrementThequantity = function (e) {
-  if (e.target.classList.contains("quantity")) {
-    let quantity = e.target.value;
-    const priceOfitem = e.target.parentElement.children[3].innerText;
-    let calculations = +(
-      priceOfitem.slice(0, priceOfitem.length - 1) * quantity
-    ).toFixed(2);
-
-    const newPriceHolder = e.target.parentElement.children[4];
-
-    newPriceHolder.innerHTML = `${calculations}&euro;`;
-
-    console.log(e.target.parentElement);
-
-    console.log(cartProducts);
-
-    e.target.parentElement.children[3].style.display = `none`;
-
-    countPriceofCart();
-  }
-};
-
 //All events!
 document.addEventListener(`DOMContentLoaded`, getLocalStorage);
 cartItemsContainer.addEventListener(`click`, removeCartItem);
+cartItemsContainer.addEventListener("click", increaseQuantity);
+cartItemsContainer.addEventListener("click", decreaseQuantity);
 itemsHolder.addEventListener(`click`, getProductToCart);
 itemsHolder.addEventListener(`click`, addProductToCart);
 showCartBtn.addEventListener(`click`, showCart);
-cartItemsContainer.addEventListener(`input`, incrementThequantity);

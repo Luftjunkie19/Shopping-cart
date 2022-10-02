@@ -105,10 +105,11 @@ body {
   display: flex;
   align-items: center;
   justify-content: space-around;
+  flex-wrap: wrap;
   border-radius: 5px;
   margin-top: 10px;
+  width: 400px;
   margin-bottom: 10px;
-  width: 380px;
   color: white;
 }
 
@@ -172,6 +173,41 @@ body {
   text-align: center;
   color: rgb(45, 133, 255);
   font-size: 24px;
+}
+
+.quantity-box {
+  display: flex;
+  padding: 10px;
+  justify-content: center;
+  align-items: center;
+}
+
+.number {
+  padding: 5px;
+  font-size: 24px;
+}
+
+.btn {
+  padding: 5px;
+  margin: 5px;
+  font-family: inherit;
+  font-size: 16px;
+  border: none;
+  cursor: pointer;
+}
+
+.btn:focus {
+  outline: none;
+}
+
+.btn.increase-qnt {
+  background-color: rgb(7, 255, 65);
+  color: white;
+}
+
+.btn.decrease-qnt {
+  background-color: rgb(225, 0, 82);
+  color: white;
 }
 
 /*Items container*/
