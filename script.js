@@ -240,12 +240,15 @@ const addProductToCart = function (e) {
       </div>
       <p class="item-title">${product.name}</p>
       
+      <p class="item-price">${product.price}&euro;</p>
+
       <div class="quantity-box">
       <button class="btn decrease-qnt">Decrease</button>
       <div class="number">1</div>
       <button class="btn increase-qnt">Increase</button>
       </div>
 
+    
       <button class="remove-btn">
       <i class="fas fa-remove fa-2x"></i>
       Remove
