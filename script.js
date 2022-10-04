@@ -1,3 +1,5 @@
+`use strict`;
+
 const showCartBtn = document.querySelector(`.cart-btn`);
 const shoppingCart = document.querySelector(`.cart`);
 const itemsHolder = document.querySelector(`.items-holder`);
@@ -25,11 +27,10 @@ const getLocalStorage = function () {
 
     <div class="quantity-box">
     <button class="btn decrease-qnt">Decrease</button>
-    <div class="number">1</div>
+    <div class="number">${product.quantity}</div>
     <button class="btn increase-qnt">Increase</button>
     </div>
 
-    <p class="new-price"></p>
     
     <button class="remove-btn"><i class="fas fa-remove fa-2x"></i>Remove</button>
     </div>`;
@@ -188,6 +189,7 @@ const getProductToCart = function (e) {
       img: cartItemImg,
       name: cartItemName,
       price: cartItemPrice,
+      quantity: 1,
     };
     cartProducts.push(cartItem);
     setLocalStorage(cartItem);
@@ -233,7 +235,7 @@ const addProductToCart = function (e) {
   e.preventDefault();
   let cartProduct = ``;
   if (e.target.classList.contains(`add-to-cart`)) {
-    cartProducts.forEach((product) => {
+    cartProducts.forEach((product, i) => {
       cartProduct += `<div class="cart-item" id="${product.id}">
       <div class="small-img">
       <img src="${product.img}" alt="${product.id}" />
@@ -244,11 +246,12 @@ const addProductToCart = function (e) {
 
       <div class="quantity-box">
       <button class="btn decrease-qnt">Decrease</button>
-      <div class="number">1</div>
+      <div class="number">${cartProducts[i].quantity}</div>
       <button class="btn increase-qnt">Increase</button>
       </div>
 
-    
+      
+
       <button class="remove-btn">
       <i class="fas fa-remove fa-2x"></i>
       Remove
@@ -259,38 +262,66 @@ const addProductToCart = function (e) {
     cartItemsContainer.innerHTML = cartProduct;
     countItemsInCart();
     countPriceofCart();
+    increaseQuantity(e);
+    decreaseQuantity(e);
   }
 };
 
-const increaseQuantity = function (e) {
+function increaseQuantity(e) {
   if (e.target.classList.contains("increase-qnt")) {
-    let addBtns = document.getElementsByClassName("increase-qnt");
+    const quantityNumber = e.target.previousElementSibling;
+    let qntyContent = +e.target.previousElementSibling.innerText;
+    let priceHolder = e.target.parentElement.parentElement.childNodes[5];
+    qntyContent++;
+    quantityNumber.innerText = qntyContent;
 
-    for (let addButton of addBtns) {
-      addButton.onclick = () => {
-        let currentInputBox = addButton.previousElementSibling;
-        currentInputBox.innerText = parseInt(currentInputBox.innerText) + 1;
-      };
-    }
+    cartProducts.forEach((product, i) => {
+      if (e.target.parentElement.parentElement.id === product.id) {
+        cartProducts[i].quantity = +quantityNumber.innerText;
+
+        let calculations = (
+          cartProducts[i].quantity * cartProducts[i].price
+        ).toFixed(2);
+
+        priceHolder.innerHTML = `${calculations}&euro;`;
+
+        console.log(calculations);
+        console.log(cartProducts[i].quantity);
+        console.log(cartProducts);
+      }
+    });
   }
-};
+}
 
-const decreaseQuantity = function (e) {
+function decreaseQuantity(e) {
   if (e.target.classList.contains("decrease-qnt")) {
-    let decBtns = document.getElementsByClassName("decrease-qnt");
-
-    for (let decButton of decBtns) {
-      decButton.onclick = () => {
-        let currentInputBox = decButton.nextElementSibling;
-        currentInputBox.innerText = +currentInputBox.innerText - 1;
-
-        if (+currentInputBox.innerText - 1 <= 0) {
-          currentInputBox.innerText = 1;
-        }
-      };
+    const quantityNumber = e.target.nextElementSibling;
+    let qntyContent = +e.target.nextElementSibling.innerText;
+    let priceHolder = e.target.parentElement.parentElement.childNodes[5];
+    console.log(priceHolder);
+    qntyContent--;
+    if (qntyContent <= 0) {
+      qntyContent = 1;
     }
+    quantityNumber.innerText = qntyContent;
+
+    cartProducts.forEach((product, i) => {
+      if (e.target.parentElement.parentElement.id === product.id) {
+        cartProducts[i].quantity = +quantityNumber.innerText;
+
+        let calculations = (
+          cartProducts[i].quantity * cartProducts[i].price
+        ).toFixed(2);
+        console.log(calculations);
+
+        priceHolder.innerHTML = `${calculations}&euro;`;
+
+        console.log(cartProducts[i].quantity);
+        console.log(cartProducts);
+      }
+    });
   }
-};
+}
 
 cartItemsContainer.addEventListener("click", increaseQuantity);
 cartItemsContainer.addEventListener("click", decreaseQuantity);
