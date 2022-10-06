@@ -202,7 +202,7 @@ const getProductToCart = function (e) {
 const countPriceofCart = function () {
   let holder = 0;
   cartProducts.forEach((item) => {
-    holder += item.price;
+    holder += item.price * item.quantity;
   });
   summaryAmount.innerHTML = `<h4>Your summary is equal:${
     holder === 0 ? "0.00" : holder.toFixed(2)
@@ -213,7 +213,12 @@ const countPriceofCart = function () {
 
 //Shows the quantity of elements in cart, array etc.
 const countItemsInCart = function () {
-  let quantity = cartProducts.length;
+  let quantity = 0;
+
+  cartProducts.forEach((product) => {
+    quantity += product.quantity;
+  });
+
   itemsNumber.innerHTML = quantity;
 };
 countItemsInCart();
@@ -289,6 +294,8 @@ function increaseQuantity(e) {
         console.log(cartProducts[i].quantity);
         console.log(cartProducts);
       }
+      countItemsInCart();
+      countPriceofCart();
     });
   }
 }
@@ -319,6 +326,8 @@ function decreaseQuantity(e) {
         console.log(cartProducts[i].quantity);
         console.log(cartProducts);
       }
+      countItemsInCart();
+      countPriceofCart();
     });
   }
 }
@@ -334,6 +343,7 @@ const removeCartItem = function (e) {
         cartProducts.splice(i, 1);
         e.target.parentElement.remove();
         removeItemfromStorage(product.id);
+        console.log(cartProducts);
         countItemsInCart();
         countPriceofCart();
       }
