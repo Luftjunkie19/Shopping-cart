@@ -6,6 +6,8 @@ const itemsHolder = document.querySelector(`.items-holder`);
 const cartItemsContainer = document.querySelector(`.cart-container`);
 const itemsNumber = document.querySelector(`.products-quantity`);
 const summaryAmount = document.querySelector(`.summary`);
+const sortByHighBtn = document.querySelector(".btn.sort-by-highest");
+const sortByLowBtn = document.querySelector(".btn.sort-by-lowest");
 
 let cartProducts = [];
 
@@ -30,8 +32,6 @@ const getLocalStorage = function () {
     <div class="number">${product.quantity}</div>
     <button class="btn increase-qnt">Increase</button>
     </div>
-
-    
     <button class="remove-btn"><i class="fas fa-remove fa-2x"></i>Remove</button>
     </div>`;
   });
@@ -169,6 +169,24 @@ const renderProducts = function () {
 };
 renderProducts();
 
+const sortByHighest = function () {
+  products.sort((a, b) => {
+    return b.price - a.price;
+  });
+
+  renderProducts();
+};
+
+const sortByLowest = function () {
+  products.sort((a, b) => {
+    return a.price - b.price;
+  });
+
+  renderProducts();
+};
+
+sortByHighBtn.addEventListener("click", sortByHighest);
+sortByLowBtn.addEventListener("click", sortByLowest);
 //Adds the item to an array and makes other things
 const getProductToCart = function (e) {
   if (e.target.classList.contains(`add-to-cart`)) {
@@ -199,7 +217,7 @@ const getProductToCart = function (e) {
 };
 
 //Gathers the cost of entire products and count it together
-const countPriceofCart = function () {
+function countPriceofCart() {
   let holder = 0;
   cartProducts.forEach((item) => {
     holder += item.price * item.quantity;
@@ -207,12 +225,10 @@ const countPriceofCart = function () {
   summaryAmount.innerHTML = `<h4>Your summary is equal:${
     holder === 0 ? "0.00" : holder.toFixed(2)
   }💶</h4>`;
-  /*let entirePrice = cartAmount.reduce((a, b) => a + b, 0).toFixed(2);
-  summaryAmount.innerHTML = `<h4>Your summary is equal:${entirePrice}💶</h4>`;*/
-};
+}
 
 //Shows the quantity of elements in cart, array etc.
-const countItemsInCart = function () {
+function countItemsInCart() {
   let quantity = 0;
 
   cartProducts.forEach((product) => {
@@ -220,11 +236,11 @@ const countItemsInCart = function () {
   });
 
   itemsNumber.innerHTML = quantity;
-};
+}
 countItemsInCart();
 
 //Shows Notification in case there is nothing in the cart
-const showNotification = function () {
+function showNotification() {
   if (cartProducts.length === 0) {
     const message = document.createElement(`p`);
     message.classList.add(`empty-msg`);
@@ -232,15 +248,12 @@ const showNotification = function () {
     cartItemsContainer.append(message);
     countPriceofCart();
   }
-};
-showNotification();
-
-//Adds product in UI
-const addProductToCart = function (e) {
+}
+function addProductToCart(e) {
   e.preventDefault();
   let cartProduct = ``;
   if (e.target.classList.contains(`add-to-cart`)) {
-    cartProducts.forEach((product, i) => {
+    cartProducts.forEach((product) => {
       cartProduct += `<div class="cart-item" id="${product.id}">
       <div class="small-img">
       <img src="${product.img}" alt="${product.id}" />
@@ -251,12 +264,9 @@ const addProductToCart = function (e) {
 
       <div class="quantity-box">
       <button class="btn decrease-qnt">Decrease</button>
-      <div class="number">${cartProducts[i].quantity}</div>
+      <div class="number">${product.quantity}</div>
       <button class="btn increase-qnt">Increase</button>
       </div>
-
-      
-
       <button class="remove-btn">
       <i class="fas fa-remove fa-2x"></i>
       Remove
@@ -267,10 +277,8 @@ const addProductToCart = function (e) {
     cartItemsContainer.innerHTML = cartProduct;
     countItemsInCart();
     countPriceofCart();
-    increaseQuantity(e);
-    decreaseQuantity(e);
   }
-};
+}
 
 function increaseQuantity(e) {
   if (e.target.classList.contains("increase-qnt")) {
@@ -282,15 +290,12 @@ function increaseQuantity(e) {
 
     cartProducts.forEach((product, i) => {
       if (e.target.parentElement.parentElement.id === product.id) {
-        cartProducts[i].quantity = +quantityNumber.innerText;
+        product.quantity = +quantityNumber.innerText;
 
-        let calculations = (
-          cartProducts[i].quantity * cartProducts[i].price
-        ).toFixed(2);
+        let calculations = (product.quantity * product.price).toFixed(2);
 
         priceHolder.innerHTML = `${calculations}&euro;`;
 
-        console.log(calculations);
         console.log(cartProducts[i].quantity);
         console.log(cartProducts);
       }
@@ -319,7 +324,6 @@ function decreaseQuantity(e) {
         let calculations = (
           cartProducts[i].quantity * cartProducts[i].price
         ).toFixed(2);
-        console.log(calculations);
 
         priceHolder.innerHTML = `${calculations}&euro;`;
 
@@ -336,7 +340,7 @@ cartItemsContainer.addEventListener("click", increaseQuantity);
 cartItemsContainer.addEventListener("click", decreaseQuantity);
 
 //Removes item from array and from from UI
-const removeCartItem = function (e) {
+function removeCartItem(e) {
   if (e.target.classList.contains("remove-btn")) {
     cartProducts.forEach((product, i) => {
       if (product.id === e.target.parentElement.id) {
@@ -348,12 +352,10 @@ const removeCartItem = function (e) {
         countPriceofCart();
       }
     });
-
     showNotification();
   }
-};
+}
 
-//All events!
 document.addEventListener(`DOMContentLoaded`, getLocalStorage);
 cartItemsContainer.addEventListener(`click`, removeCartItem);
 itemsHolder.addEventListener(`click`, getProductToCart);

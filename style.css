@@ -237,6 +237,21 @@ body {
   grid-gap: 10px;
 }
 
+.btns-holder {
+  display: flex;
+  align-items: center;
+}
+
+.btn.sort-by-highest {
+  background-color: gold;
+  font-weight: 800;
+}
+
+.btn.sort-by-lowest {
+  background-color: rgb(255, 34, 0);
+  font-weight: 800;
+}
+
 .item {
   display: flex;
   flex-direction: column;
